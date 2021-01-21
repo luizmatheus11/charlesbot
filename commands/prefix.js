@@ -4,6 +4,14 @@ const Discord = require('discord.js')
 module.exports.run = async (client, message, args, config, mongoose) => {
     const server = client.guilds.cache.get(message.guild.id)
     const servericon = server.iconURL({ format: "png", dynamic: true })
+    const embed = new Discord.MessageEmbed()
+                .setColor(`#ac0202`)
+                .setThumbnail(servericon)
+                .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
+                .setDescription(`<:Ve_ErradoTKF:801586594146418709> Use addprefix, updateprefix ou reset`)
+                .setFooter(`${server.name}`, servericon)
+                .setTimestamp()
+    if(!args[0]) return message.channel.send(embed)
     switch (args[0].toLowerCase()) {
         case 'addprefix': {
             const res = args[1]
@@ -15,10 +23,18 @@ module.exports.run = async (client, message, args, config, mongoose) => {
                 .setFooter(`${server.name}`, servericon)
                 .setTimestamp()
 
-            if (!res) return message.reply(embed)
+            if (!res) return message.channel.send(embed)
 
             await prefixSchema.findOne({ Guild: message.guild.id }, async (err, data) => {
                 if (err) throw err;
+                const embed = new Discord.MessageEmbed()
+                .setColor(`#ac0202`)
+                .setThumbnail(servericon)
+                .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
+                .setDescription(`<:Ve_ErradoTKF:801586594146418709> Você já possui um prefixo no banco de dados.`)
+                .setFooter(`${server.name}`, servericon)
+                .setTimestamp()
+                if(data) return message.channel.send(embed)
                 if (!data) {
                     data = new prefixSchema({
                         Guild: message.guild.id,
