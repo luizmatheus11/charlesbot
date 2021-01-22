@@ -8,6 +8,7 @@ module.exports = class ReadyListener extends Event {
     }
 
     run() {
-        console.log("Online owo")
+        console.log(`Logando o ${this.client.user.tag}`)
+        console.log(`Logando Database ${this.client.database.prefix.findOne({}).mongooseCollection.conn.name}`)
     }
 }

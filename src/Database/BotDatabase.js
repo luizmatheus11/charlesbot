@@ -4,7 +4,7 @@ module.exports = class BotDatabase {
     constructor(uri) {
         connect(uri, { useUnifiedTopology: true, useNewUrlParser: true }, e => {
             if(e) throw new Error("Mongoose Error: " + e)
-            console.log("Database connected with success")
+            console.log(`Database by MongoDB`)
         })
 
         return {
