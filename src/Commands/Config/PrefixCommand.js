@@ -1,6 +1,6 @@
 const Command = require('../../Structures/Command')
 const { MessageEmbed } = require('discord.js')
-const color = process.env.COLOR
+const {PREFIX, COLOR} = process.env
 
 module.exports = class extends Command {
     constructor(client) {
@@ -13,10 +13,10 @@ module.exports = class extends Command {
     async run(ctx) {
         const servericon = ctx.guild.iconURL({ format: "png", dynamic: true })
         const embed = new MessageEmbed()
-            .setColor(color)
+            .setColor(COLOR)
             .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
             .setDescription(`<:Ve_ErradoTKF:801586594146418709> Use addprefix, updateprefix ou reset`)
-            .setFooter(`${server.name}`, servericon)
+            .setFooter(`${ctx.guild.name.toUpperCase()}`, servericon)
             .setTimestamp()
         if (!ctx.args[0]) return (embed)
 
@@ -24,20 +24,20 @@ module.exports = class extends Command {
             case 'add': {
                 const res = ctx.args[1]
                 const embed = new MessageEmbed()
-                    .setColor(color)
+                    .setColor(COLOR)
                     .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
                     .setDescription(`<:Ve_ErradoTKF:801586594146418709> Expecifique o prefixo do servidor.`)
-                    .setFooter(`${server.name}`, servericon)
+                    .setFooter(`${ctx.guild.name.toUpperCase()}`, servericon)
                     .setTimestamp()
 
                 if (!res) return ctx.channel.send(embed)
                 await ctx.client.database.prefix.findOne({ Guild: ctx.guild.id }, async (err, data) => {
                     if (err) throw err;
                     const embed = new MessageEmbed()
-                        .setColor(color)
+                        .setColor(COLOR)
                         .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
                         .setDescription(`<:Ve_ErradoTKF:801586594146418709> Você já possui um prefixo no banco de dados.`)
-                        .setFooter(`${server.name}`, servericon)
+                        .setFooter(`${ctx.guild.name.toUpperCase()}`, servericon)
                         .setTimestamp()
                     if (data) {
                         ctx.channel.send(embed)
@@ -49,10 +49,10 @@ module.exports = class extends Command {
 
                         data.save()
                         const embed = new MessageEmbed()
-                            .setColor(color)
+                            .setColor(COLOR)
                             .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
                             .setDescription(`<:V_CorretoTKF:801586413535100939> Seu novo prefixo é **${res}**`)
-                            .setFooter(`${server.name}`, servericon)
+                            .setFooter(`${ctx.guild.name.toUpperCase()}`, servericon)
                             .setTimestamp()
                         ctx.channel.send(embed)
                     }
@@ -66,10 +66,10 @@ module.exports = class extends Command {
                     data.Prefix = res
                     data.save()
                     const embed = new MessageEmbed()
-                        .setColor(color)
+                        .setColor(COLOR)
                         .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
                         .setDescription(`<:V_CorretoTKF:801586413535100939> Seu prefixo atualizado é **${res}**`)
-                        .setFooter(`${server.name}`, servericon)
+                        .setFooter(`${ctx.guild.name.toUpperCase()}`, servericon)
                         .setTimestamp()
                     await ctx.channel.send(embed)
                 })
@@ -78,10 +78,10 @@ module.exports = class extends Command {
             case `reset`: {
                 await ctx.client.database.prefix.findOneAndDelete({ Guild: ctx.guild.id })
                 const embed = new MessageEmbed()
-                    .setColor(color)
+                    .setColor(COLOR)
                     .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
-                    .setDescription(`<:V_CorretoTKF:801586413535100939> Prefixo resetado com sucesso. Prefixo padrão do bot é **${process.env.PREFIX}**`)
-                    .setFooter(`${server.name}`, servericon)
+                    .setDescription(`<:V_CorretoTKF:801586413535100939> Prefixo resetado com sucesso. Prefixo padrão do bot é **${PREFIX}**`)
+                    .setFooter(`${ctx.guild.name.toUpperCase()}`, servericon)
                     .setTimestamp()
                 ctx.channel.send(embed)
                 break;

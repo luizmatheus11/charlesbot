@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js')
 const Command = require('../../Structures/Command')
-const color = process.env.COLOR
+const {COLOR} = process.env
 
 module.exports = class extends Command {
     constructor(client) {
@@ -14,17 +14,16 @@ module.exports = class extends Command {
         const servericon = ctx.guild.iconURL({ format: "png", dynamic: true })
         const deleteCount = parseInt(ctx.args[0], 10)
         const embed = new MessageEmbed()
-            .setColor(color)
-            .setTitle(`<a:xseta_HG:801587045633884236> Moderação ${server.name.toUpperCase()}`)
+            .setColor(COLOR)
             .setDescription(`<:Ve_ErradoTKF:801586594146418709> Diga o numero de mensagens para apagar.`)
-            .setFooter(`${server.name}`, servericon)
+            .setFooter(`${ctx.guild.name}`, servericon)
             .setTimestamp()
         if (!deleteCount || deleteCount < 1 || deleteCount > 99) return ctx.channel.send(embed).then(m => m.delete({ timeout: 5000 }))
 
         const embed1 = new MessageEmbed()
-            .setColor(color)
+            .setColor(COLOR)
             .setDescription(`<a:lab_loading:802253207240704001> Apagando as mensagens...`)
-            .setFooter(`${server.name}`, servericon)
+            .setFooter(`${ctx.guild.name}`, servericon)
             .setTimestamp()
         await ctx.channel.send(embed1)
         const fetched = await ctx.channel.messages.fetch({
@@ -40,8 +39,8 @@ module.exports = class extends Command {
         }
 
         const embed2 = new MessageEmbed()
-            .setColor(color)
-            .setTitle(`<a:xseta_HG:801587045633884236> Moderação ${server.name.toUpperCase()}`)
+            .setColor(COLOR)
+            .setTitle(`<a:xseta_HG:801587045633884236> ${ctx.guild.name.toUpperCase()}`)
             .setDescription(`<a:Rainbow_Blob_Trash:802256372266958848> Apaguei com sucesso: **${deleteCount} ${segundos}**`)
             .setFooter(`${server.name}`, servericon)
             .setTimestamp()

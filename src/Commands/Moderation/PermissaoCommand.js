@@ -1,11 +1,11 @@
 const Command = require('../../Structures/Command')
 const {MessageEmbed} = require('discord.js')
-const color = process.env.COLOR
+const {COLOR} = process.env
 module.exports = class extends Command {
     constructor(client) {
         super(client, {
-            name: 'lock',
-            aliases: ['trancar']
+            name: 'permissao',
+            aliases: ['perm']
         })
     }
 
@@ -15,10 +15,10 @@ module.exports = class extends Command {
     
     const servericon = ctx.guild.iconURL({ format: "png", dynamic: true })
     const embed = new MessageEmbed()
-        .setColor(color)
-        .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
+        .setColor(COLOR)
+        .setTitle(`<a:xseta_HG:801587045633884236> Sistema de permissão ${ctx.guild.name.toUpperCase()}`)
         .setDescription(`<:Ve_ErradoTKF:801586594146418709> Use add ou remove.`)
-        .setFooter(`${server.name}`, servericon)
+        .setFooter(`${ctx.guild.name}`, servericon)
         .setTimestamp()
 
     if (!ctx.args[0]) return ctx.channel.send(embed)
@@ -27,15 +27,15 @@ module.exports = class extends Command {
         case 'add' : {
             const cargo = ctx.mentions.roles.first() || ctx.guild.roles.cache.get(ctx.args[1])
             const embed = new MessageEmbed()
-                        .setColor(color)
+                        .setColor(COLOR)
                         .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
-                        .setDescription(`<:V_CorretoTKF:801586413535100939> Permissão <@&${cargo.id}> adicionada com sucesso.`)
+                        .setDescription(`<:V_CorretoTKF:801586413535100939> Permissão ${cargo} adicionada com sucesso.`)
                         .setFooter(`${server.name}`, servericon)
                         .setTimestamp()
                 ctx.channel.send(embed)
-                await permSchema.findOne({ Guild: ctx.guild.id }, async (err, data) => {
+                await ctx.client.database.permissaomod.findOne({ Guild: ctx.guild.id }, async (err, data) => {
                     if (err) throw err;
-                        data = new permSchema({
+                        data = new ctx.client.database.permissaomod({
                             Guild: ctx.guild.id,
                             PermissaoMod: cargo.id,
                         })
