@@ -9,7 +9,7 @@ module.exports = class extends Command {
         })
     }
 
-    run(ctx) {
+     async run(ctx) {
         if (!ctx.guild.ownerID || ctx.author.id !== '160928247973019648')
         return ctx.reply('você nao tem permissão pra este comando.')
     
