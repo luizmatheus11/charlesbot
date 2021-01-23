@@ -3,47 +3,47 @@ const Event = require('../Structures/Event')
 const { MessageEmbed } = require('discord.js')
 const default_prefix = process.env.PREFIX
 
- 
+
 module.exports = class MessageListener extends Event {
-    constructor(client) {
-        super(client, {
-            name: "message"
-        })
+  constructor(client) {
+    super(client, {
+      name: "message"
+    })
+  }
+
+  async run(message) {
+    let prefix;
+    const data = await this.client.database.prefix.findOne({ Guild: message.guild.id }).catch(err => console.log(err))
+    if (data) {
+      prefix = data.Prefix
+    } else {
+      prefix = default_prefix
     }
 
-    async run(message) {
-        let prefix;
-        const data = await this.client.database.prefix.findOne({ Guild: message.guild.id}).catch(err => console.log(err))
-        if(data){
-          prefix = data.Prefix
-        } else {
-          prefix = default_prefix
-        }
-
-        if(message.channel.type !== "text") return;
-        if(message.author.bot) return;
+    if (message.channel.type !== "text") return;
+    if (message.author.bot) return;
     const embed = new MessageEmbed()
-    .setColor(`#2a0050`)
-    .setAuthor(`CharDev`)
-    .setDescription(`Me chamo ${message.client.user.username}, fui criado para servir aos administradores desse servidor e adoro muquecas
+      .setColor(color)
+      .setAuthor(`CharDev`)
+      .setDescription(`Me chamo ${message.client.user.username}, fui criado para servir aos administradores desse servidor e adoro muquecas
     Meu prefixo neste servidor é ${prefix}`)
-    .setTimestamp()
+      .setTimestamp()
 
-  if ([`<@${message.client.user.id}>`, `<@!${message.client.user.id}>`].includes(message.content)) return message.channel.send(embed)
-        
-        if(!message.content.startsWith(prefix)) return;
-        const args = message.content.slice(prefix.length).trim().split(" ");
+    if ([`<@${message.client.user.id}>`, `<@!${message.client.user.id}>`].includes(message.content)) return message.channel.send(embed)
+    if (!message.content.startsWith(prefix)) return;
+    const args = message.content.slice(prefix.length).trim().split(" ");
 
-        const command = args.shift().toLowerCase()
-        const cmd = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command))
-        if(!cmd) return message.channel.send(":x: | Não tenho o comando/alias " + command)
+    const command = args.shift().toLowerCase()
+    const cmd = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command))
+    if (!cmd) return message.channel.send(":x: | Não tenho o comando/alias " + command)
 
-        message.channel.startTyping();
-        
-        const context = new CommandContext(message, args, this.client)
+    message.channel.startTyping();
 
-        cmd.run(context)
+    const context = new CommandContext(message, args, this.client)
 
-        message.channel.stopTyping();
-    }
+    cmd.run(context)
+    message.delete({timeout: 0})
+
+    message.channel.stopTyping();
+  }
 }

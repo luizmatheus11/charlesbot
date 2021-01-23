@@ -1,5 +1,6 @@
 const Command = require('../../Structures/Command')
 const { MessageEmbed } = require('discord.js')
+const color = process.env.COLOR
 
 module.exports = class extends Command {
     constructor(client) {
@@ -10,56 +11,52 @@ module.exports = class extends Command {
     }
 
     async run(ctx) {
-        const server = ctx.client.guilds.cache.get(ctx.guild.id)
-        const servericon = server.iconURL({ format: "png", dynamic: true })
+        const servericon = ctx.guild.iconURL({ format: "png", dynamic: true })
         const embed = new MessageEmbed()
-                .setColor(`#ac0202`)
-                .setThumbnail(servericon)
-                .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
-                .setDescription(`<:Ve_ErradoTKF:801586594146418709> Use addprefix, updateprefix ou reset`)
-                .setFooter(`${server.name}`, servericon)
-                .setTimestamp()
-        if(!ctx.args[0]) return(embed)
+            .setColor(color)
+            .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
+            .setDescription(`<:Ve_ErradoTKF:801586594146418709> Use addprefix, updateprefix ou reset`)
+            .setFooter(`${server.name}`, servericon)
+            .setTimestamp()
+        if (!ctx.args[0]) return (embed)
 
         switch (ctx.args[0].toLowerCase()) {
             case 'add': {
                 const res = ctx.args[1]
                 const embed = new MessageEmbed()
-                    .setColor(`#ac0202`)
-                    .setThumbnail(servericon)
+                    .setColor(color)
                     .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
                     .setDescription(`<:Ve_ErradoTKF:801586594146418709> Expecifique o prefixo do servidor.`)
                     .setFooter(`${server.name}`, servericon)
                     .setTimestamp()
-    
+
                 if (!res) return ctx.channel.send(embed)
                 await ctx.client.database.prefix.findOne({ Guild: ctx.guild.id }, async (err, data) => {
                     if (err) throw err;
                     const embed = new MessageEmbed()
-                    .setColor(`#ac0202`)
-                    .setThumbnail(servericon)
-                    .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
-                    .setDescription(`<:Ve_ErradoTKF:801586594146418709> Você já possui um prefixo no banco de dados.`)
-                    .setFooter(`${server.name}`, servericon)
-                    .setTimestamp()
-                    if(data){
+                        .setColor(color)
+                        .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
+                        .setDescription(`<:Ve_ErradoTKF:801586594146418709> Você já possui um prefixo no banco de dados.`)
+                        .setFooter(`${server.name}`, servericon)
+                        .setTimestamp()
+                    if (data) {
                         ctx.channel.send(embed)
                     } else {
                         data = new ctx.client.database.prefix({
                             Guild: ctx.guild.id,
                             Prefix: res
                         })
-                    
+
                         data.save()
                         const embed = new MessageEmbed()
-                            .setColor(`#228B22`)
-                            .setThumbnail(servericon)
+                            .setColor(color)
                             .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
                             .setDescription(`<:V_CorretoTKF:801586413535100939> Seu novo prefixo é **${res}**`)
                             .setFooter(`${server.name}`, servericon)
                             .setTimestamp()
                         ctx.channel.send(embed)
-                   }}
+                    }
+                }
                 )
                 break;
             }
@@ -69,8 +66,7 @@ module.exports = class extends Command {
                     data.Prefix = res
                     data.save()
                     const embed = new MessageEmbed()
-                        .setColor(`#228B22`)
-                        .setThumbnail(servericon)
+                        .setColor(color)
                         .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
                         .setDescription(`<:V_CorretoTKF:801586413535100939> Seu prefixo atualizado é **${res}**`)
                         .setFooter(`${server.name}`, servericon)
@@ -82,8 +78,7 @@ module.exports = class extends Command {
             case `reset`: {
                 await ctx.client.database.prefix.findOneAndDelete({ Guild: ctx.guild.id })
                 const embed = new MessageEmbed()
-                    .setColor(`#228B22`)
-                    .setThumbnail(servericon)
+                    .setColor(color)
                     .setTitle(`<a:xseta_HG:801587045633884236> Sistema de customização de prefixo`)
                     .setDescription(`<:V_CorretoTKF:801586413535100939> Prefixo resetado com sucesso. Prefixo padrão do bot é **${process.env.PREFIX}**`)
                     .setFooter(`${server.name}`, servericon)
