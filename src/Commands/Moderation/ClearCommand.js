@@ -42,7 +42,7 @@ module.exports = class extends Command {
             .setColor(COLOR)
             .setTitle(`<a:xseta_HG:801587045633884236> ${ctx.guild.name.toUpperCase()}`)
             .setDescription(`<a:Rainbow_Blob_Trash:802256372266958848> Apaguei com sucesso: **${deleteCount} ${segundos}**`)
-            .setFooter(`${server.name}`, servericon)
+            .setFooter(`${ctx.guild.name}`, servericon)
             .setTimestamp()
 
         await ctx.channel.send(embed2).then(m => m.delete({ timeout: 10000 }))

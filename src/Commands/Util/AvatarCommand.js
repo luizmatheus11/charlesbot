@@ -6,7 +6,8 @@ module.exports = class extends Command {
     constructor(client) {
         super(client, {
             name: 'avatar',
-            aliases: ['av']
+            aliases: ['av'],
+            cooldown: 10000
         })
     }
 
@@ -17,7 +18,7 @@ module.exports = class extends Command {
     
         let embed = new MessageEmbed()
             .setColor(color)
-            .setDescription(`<:blobcamera:802276851439501352> ${user.username}`)
+            .setTitle(`<:blobcamera:802276851439501352> ${user.username}`)
             .setImage(avatar)
             .setTimestamp()
         ctx.channel.send(embed)
