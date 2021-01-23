@@ -1,7 +1,7 @@
 module.exports = class Event {
-    constructor(client, options) {
-        this.client = client;
+    constructor(client, options = {}) {
         this.name = options.name;
+        this.client = client;
     }
 
     run() {}

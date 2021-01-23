@@ -4,7 +4,9 @@ module.exports = class extends Command {
     constructor(client) {
         super(client, {
             name: 'eval',
-            aliases: ['e', 'ev']
+            aliases: ['e', 'ev'],
+            cooldown: 5,
+            devOnly: true
         })
     }
 

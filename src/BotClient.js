@@ -12,6 +12,7 @@ module.exports = class BotClient extends Client {
 
         this.commands = new Collection()
         this.aliases = new Collection()
+        this.cooldowns = new Collection()
 
         this.database = new BotDatabase(this.settings.mongo)
     } 
@@ -24,7 +25,6 @@ module.exports = class BotClient extends Client {
 
     initLoaders() {
         for(const Loader of Object.values(Loaders)) {
-            console.log(Loader)
             new Loader(this)
         }
     }

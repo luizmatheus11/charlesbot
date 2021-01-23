@@ -1,9 +1,7 @@
 const CommandContext = require('../Structures/CommandContext');
 const Event = require('../Structures/Event')
 const { MessageEmbed } = require('discord.js')
-const default_prefix = process.env.PREFIX
-const color = process.env.COLOR
-
+const { PREFIX, COLOR } = process.env;
 
 module.exports = class MessageListener extends Event {
   constructor(client) {
@@ -13,21 +11,17 @@ module.exports = class MessageListener extends Event {
   }
 
   async run(message) {
-    let prefix;
-    const data = await this.client.database.prefix.findOne({ Guild: message.guild.id }).catch(err => console.log(err))
-    if (data) {
-      prefix = data.Prefix
-    } else {
-      prefix = default_prefix
-    }
-
     if (message.channel.type !== "text") return;
     if (message.author.bot) return;
+    
+    let prefix = PREFIX;
+    const data = await this.client.database.prefix.findOne({ Guild: message.guild.id }).catch(err => console.log(err))
+    if (data) prefix = data.Prefix;
+    
     const embed = new MessageEmbed()
-      .setColor(color)
+      .setColor(COLOR)
       .setAuthor(`CharDev`)
-      .setDescription(`Me chamo ${message.client.user.username}, fui criado para servir aos administradores desse servidor e adoro muquecas
-    Meu prefixo neste servidor é ${prefix}`)
+      .setDescription(`Me chamo ${message.client.user.username}, fui criado para servir aos administradores desse servidor e adoro muquecas\nMeu prefixo neste servidor é ${prefix}`)
       .setTimestamp()
 
     if ([`<@${message.client.user.id}>`, `<@!${message.client.user.id}>`].includes(message.content)) return message.channel.send(embed)
@@ -37,13 +31,21 @@ module.exports = class MessageListener extends Event {
     const command = args.shift().toLowerCase()
     const cmd = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command))
     if (!cmd) return message.channel.send(":x: | Não tenho o comando/alias " + command)
+    
+    if(this.client.cooldowns.has(message.author.id)) return message.channel.send("Você tá em cooldown cachorra")
+    if(cmd.commandSettings.devOnly && !this.client.settings.owners.includes(message.author.id)) return message.channel.send("Tu não é um dos meus criadores, rala")
 
     message.channel.startTyping();
-
     const context = new CommandContext(message, args, this.client)
 
     cmd.run(context)
-    message.delete({timeout: 0})
+    this.client.cooldowns.set(message.author.id, cmd.commandSettings.cooldown)
+    
+    setTimeout(() => {
+      this.client.cooldowns.delete(message.author.id)
+    }, cmd.commandSettings.cooldown)
+    
+    message.delete()
 
     message.channel.stopTyping();
   }
