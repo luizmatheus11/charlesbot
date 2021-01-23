@@ -2,6 +2,7 @@ const CommandContext = require('../Structures/CommandContext');
 const Event = require('../Structures/Event')
 const { MessageEmbed } = require('discord.js')
 const default_prefix = process.env.PREFIX
+const color = process.env.COLOR
 
 
 module.exports = class MessageListener extends Event {
