@@ -11,6 +11,17 @@ module.exports = class extends Command {
     }
 
     async run(ctx) {
+        
+        const data = await ctx.client.database.permissaomod.find({ Guild: ctx.guild.id})
+        let counter = 0
+        const arrayperm = []
+        data.forEach(element => {
+            arrayperm.push(data[counter].PermissaoMod)
+            counter++
+        });
+        if(!arrayperm.some(id => ctx.member.roles.cache.has(id))) 
+        return ctx.channel.send('sem perm otario')
+
         const servericon = ctx.guild.iconURL({ format: "png", dynamic: true })
         const embed = new MessageEmbed()
             .setColor(COLOR)
