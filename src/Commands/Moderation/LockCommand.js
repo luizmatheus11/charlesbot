@@ -9,7 +9,7 @@ module.exports = class extends Command {
         })
     }
 
-    run(ctx) {
+    async run(ctx) {
 
       const data = await ctx.client.database.permissaomod.find({ Guild: ctx.guild.id})
       let counter = 0

@@ -9,7 +9,7 @@ module.exports = class extends Command {
         })
     }
 
-    run(ctx) {
+    async run(ctx) {
 
         const data = await ctx.client.database.permissaomod.find({ Guild: ctx.guild.id})
         let counter = 0
@@ -20,7 +20,7 @@ module.exports = class extends Command {
         });
         if(!arrayperm.some(id => ctx.member.roles.cache.has(id))) 
         return ctx.channel.send('sem perm otario')
-        
+
         let embed = new MessageEmbed()
               .setColor(color)
               .setDescription(`Este canal foi desbloqueado por ${ctx.author}🔓`)
