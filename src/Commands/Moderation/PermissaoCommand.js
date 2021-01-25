@@ -18,7 +18,7 @@ module.exports = class extends Command {
         const embed = new MessageEmbed()
             .setColor(COLOR)
             .setTitle(`<a:xseta_HG:801587045633884236> Sistema de permissão ${ctx.guild.name.toUpperCase()}`)
-            .setDescription(`<:Ve_ErradoTKF:801586594146418709> Use add ou remove.`)
+            .setDescription(`<:Ve_ErradoTKF:801586594146418709> Use add, remove ou visualize`)
             .setFooter(`${ctx.guild.name}`, servericon)
             .setTimestamp()
 
@@ -27,18 +27,34 @@ module.exports = class extends Command {
         switch (ctx.args[0].toLowerCase()) {
             case 'add': {
                 const cargo = ctx.mentions.roles.first() || ctx.guild.roles.cache.get(ctx.args[1])
-                await ctx.client.database.permissaomod.findOne({ Guild: ctx.guild.id }, async (err, data) => {
+                await ctx.client.database.permissaomod.find({ Guild: ctx.guild.id }, async (err, data) => {
                     if (err) throw err;
-                    
+                    let counter = 0
+                    const arrayIds = []
+                    data.forEach(element => {
+                        arrayIds.push(data[counter].PermissaoMod)
+                        counter++
+                    });
                     if (!data) {
                         data = new ctx.client.database.permissaomod({
                             Guild: ctx.guild.id,
                             PermissaoMod: cargo.id,
                             PermissaoName: cargo
-                        })
+                        }).save()
+                    } else if (arrayIds.includes(cargo.id)) {
+                        const embed = new MessageEmbed()
+                            .setColor(COLOR)
+                            .setTitle(`<a:xseta_HG:801587045633884236> Sistema de permissão ${ctx.guild.name.toUpperCase()}`)
+                            .setDescription(`<:Ve_ErradoTKF:801586594146418709> Já existe este cargo dentro da database`)
+                            .setFooter(`${ctx.guild.name}`, servericon)
+                            .setTimestamp()
+                        return ctx.channel.send(embed)
                     } else {
-                        data.PermissaoMod.push(cargo.id)
-                        data.PermissaoName.push(cargo)
+                        data = new ctx.client.database.permissaomod({
+                            Guild: ctx.guild.id,
+                            PermissaoMod: cargo.id,
+                            PermissaoName: cargo
+                        }).save()
                     }
                     const embed = new MessageEmbed()
                         .setColor(COLOR)
@@ -47,7 +63,6 @@ module.exports = class extends Command {
                         .setFooter(`${ctx.guild.name.toUpperCase()}`, servericon)
                         .setTimestamp()
                     ctx.channel.send(embed)
-                    data.save()
 
                 })
                 break;
@@ -65,9 +80,26 @@ module.exports = class extends Command {
                 break;
 
             }
-            case 'visualize': { 
-                const data = await ctx.client.database.permissaomod.findOne({ Guild: ctx.guild.id })
-                console.log(data.PermissaoMod)
+            case 'visualize': {
+                let counter = 0
+                const arrayVisu = []
+                const guild = ctx.guild.id
+                const data = await ctx.client.database.permissaomod.find({ Guild: guild })
+                data.forEach(element => {
+                    arrayVisu.push(data[counter].PermissaoName)
+                    counter++
+                });
+                console.log(arrayVisu)
+                const embed2 = new MessageEmbed()
+                    .setColor(COLOR)
+                    .setTitle(`<a:xseta_HG:801587045633884236> Sistema de permissão ${ctx.guild.name.toUpperCase()}`)
+                    .setDescription(`Permissões Moderação:${arrayVisu}`)
+                    .setFooter(`${ctx.guild.name.toUpperCase()}`, servericon)
+                    .setTimestamp()
+                await ctx.channel.send(embed2)
+
+
+
             }
         }
 
