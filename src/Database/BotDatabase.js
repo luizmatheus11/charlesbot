@@ -2,7 +2,7 @@ const { connect, model } = require('mongoose')
 
 module.exports = class BotDatabase {
     constructor(uri) {
-        connect(uri, { useUnifiedTopology: true, useNewUrlParser: true }, e => {
+        connect(uri, { useUnifiedTopology: true, useNewUrlParser: true, autoIndex: false }, e => {
             if(e) throw new Error("Mongoose Error: " + e)
             console.log(`Database by MongoDB`)
         })
