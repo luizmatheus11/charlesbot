@@ -11,7 +11,8 @@ module.exports = class BotDatabase {
             ...this,
             permissaoav: model("permissaoav", require('./Models/permissaoav')),
             prefix: model("prefix", require('./Models/prefix')),
-            permissaomod: model('permissaomod', require('./Models/permissaomod'))
+            permissaomod: model('permissaomod', require('./Models/permissaomod')),
+            muted: model('muted', require('./Models/muted'))
         }
     }
 }
