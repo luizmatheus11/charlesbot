@@ -2,6 +2,7 @@ const CommandContext = require('../Structures/CommandContext');
 const Event = require('../Structures/Event')
 const { MessageEmbed } = require('discord.js')
 const { PREFIX, COLOR } = process.env;
+const ms = require('ms')
 
 module.exports = class MessageListener extends Event {
   constructor(client) {
@@ -30,10 +31,10 @@ module.exports = class MessageListener extends Event {
 
     const command = args.shift().toLowerCase()
     const cmd = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command))
-    if (!cmd) return message.channel.send(":x: | Não tenho o comando/alias " + command)
+    if (!cmd) return message.channel.send(":x: | Não tenho este comando. " + command)
     
-    if(this.client.cooldowns.has(message.author.id)) return message.channel.send("Você tá em cooldown cachorra")
-    if(cmd.commandSettings.devOnly && !this.client.settings.owners.includes(message.author.id)) return message.channel.send("Tu não é um dos meus criadores, rala")
+    if(this.client.cooldowns.has(message.author.id)) return message.channel.send(`Você está em tempo de espera de ${ms(cmd.commandSettings.cooldown)} `)
+    if(cmd.commandSettings.devOnly && !this.client.settings.owners.includes(message.author.id)) return message.channel.send("Você não é um dos meus criadores.")
 
     message.channel.startTyping();
     const context = new CommandContext(message, args, this.client)
